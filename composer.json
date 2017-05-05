@@ -1,0 +1,25 @@
+{
+  "name": "MakikaM/PriceToHTML",
+  "description": "Pricelist parser from excel file to HTML file",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Maxim Matyushin",
+      "email": "matjushin.m@gmail.com"
+    }
+  ],
+  "require": {
+    "nuovo/spreadsheet-reader": "0.5.11",
+    "phpunit/phpunit": "^6.1"
+  },
+
+  "autoload": {
+    "psr-4": {
+      "MakikaM\\PriceToHTML\\": "vendor/makikam/pricetohtml/src",
+      "SpreadsheetReader\\": "vendor/nuovo/spreadsheet-reader"
+    }
+  }
+
+}
