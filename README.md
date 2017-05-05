@@ -1,6 +1,10 @@
 **pricetohtml** is excel pricelist to HTML file converter.
 
 How it works:
+ * Check uploaded on server excel file on open
+ * Moves current pricelist excel file to defined folder for old files
+ * Moves new one into the place of previuous
+ * Delete oldest files to keep defined number of old pricelists
  * Reads excel file, passes defined number of rows(of headers, contacts, logos,etc.)
  * Read defined columns, passes rows with defined NOT EMPTY columns
  * Genereates HTML file from defined header and footer HTML files and formatted rows from Excel files between.
