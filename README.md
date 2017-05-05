@@ -6,7 +6,7 @@ How it works:
  * Moves new one into the place of previous
  * Delete oldest files to keep defined number of old pricelists
  * Reads excel file, passes defined number of rows(of headers, contacts, logos,etc.)
- * Read defined columns, passes rows with defined NOT EMPTY columns
+ * Read defined columns, passes rows if defined NOT EMPTY columns is empty
  * Genereates HTML file from defined header and footer HTML files and formatted rows from Excel files between.
 
 ### Requirements:
