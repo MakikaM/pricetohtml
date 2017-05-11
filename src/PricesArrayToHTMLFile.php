@@ -63,13 +63,38 @@ class PricesArrayToHTMLFile
         }
 
         $fhandle = fopen($this->_dstFile, 'ab');
+        $arTplVarsOrder = $this->_getTemplateVarsOrder($arTplVars);
 
         foreach ($this->_arPrice as $arPricePos) {
             $this->_checkPricePositionConsistency($arPricePos, $tplCount);
-            fwrite($fhandle, str_replace($arTplVars, $arPricePos, $this->_tpl));
+
+            $arReorderedPricePos = $this->_getReorderPricePositions($arTplVarsOrder, $arPricePos);
+            fwrite($fhandle, str_replace($arTplVars, $arReorderedPricePos, $this->_tpl));
         }
 
         fclose($fhandle);
+    }
+
+
+    private function _getTemplateVarsOrder(array $arTplVars)
+    {
+        $res = [];
+        foreach ($arTplVars as $tplVar) {
+            $res[] = (int)substr($tplVar, 1);
+        }
+
+        return $res;
+    }
+
+    private function _getReorderPricePositions(array $arTplVarsOrder, array $arPricePos): array
+    {
+        $res = [];
+
+        foreach ($arTplVarsOrder as $idx) {
+            $res[] = $arPricePos[$idx];
+        }
+
+        return $res;
     }
 
 
