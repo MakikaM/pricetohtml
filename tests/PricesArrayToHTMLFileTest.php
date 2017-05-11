@@ -9,6 +9,7 @@ class PricesArrayToHTMLFileTest extends TestCase
     protected $_HTMLDir;
     protected $_arPricesExample;
 
+    
     public function setUp()
     {
         $this->_HTMLDir = __DIR__ . '/html/';
@@ -54,6 +55,7 @@ class PricesArrayToHTMLFileTest extends TestCase
             $this->_arPricesExample);
     }*/
 
+
     public function testEmptyPriceListArray()
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -64,6 +66,7 @@ class PricesArrayToHTMLFileTest extends TestCase
             $this->_HTMLDir . 'test-html-output.html',
             []);
     }
+
 
     public function testEmptyTemplateLine()
     {
@@ -89,6 +92,7 @@ class PricesArrayToHTMLFileTest extends TestCase
             $this->_arPricesExample,
             "<tr><td>%1 - %2</td></tr><td><tr></tr></td>\n");//не хватает %3
     }
+
 
     public function testWrongMoreVarsNumInTemplateLineThenInArray()
     {
