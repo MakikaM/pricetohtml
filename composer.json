@@ -1,9 +1,8 @@
 {
-  "name": "MakikaM/PriceToHTML",
+  "name": "makikam/pricetohtml",
   "description": "Pricelist parser from excel file to HTML file",
-  "minimum-stability": "stable",
+  "minimum-stability": "dev",
   "license": "MIT",
-  "type": "library",
   "authors": [
     {
       "name": "Maxim Matyushin",
@@ -19,7 +18,7 @@
   },
   "autoload": {
     "psr-4": {
-      "MakikaM\\PriceToHTML\\": "vendor/makikam/pricetohtml/src",
+      "makikam\\PriceToHTML\\": "src",
       "SpreadsheetReader\\": "vendor/nuovo/spreadsheet-reader"
     }
   }

@@ -1,6 +1,6 @@
 <?php
 
-namespace MakikaM\PriceToHTML;
+namespace makikam\PriceToHTML;
 
 use PHPUnit\Framework\TestCase;
 
@@ -9,7 +9,7 @@ class PricesArrayToHTMLFileTest extends TestCase
     protected $_HTMLDir;
     protected $_arPricesExample;
 
-    
+
     public function setUp()
     {
         $this->_HTMLDir = __DIR__ . '/html/';
@@ -18,6 +18,7 @@ class PricesArrayToHTMLFileTest extends TestCase
             1 => ['ЯЩИК, ПОДСТАКАННИК КОНСОЛИ', '96615503', '154.09']
         ];
     }
+
 
     public function testWrongHeadFile()
     {

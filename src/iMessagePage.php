@@ -6,7 +6,7 @@
  * Time: 18:14
  */
 
-namespace MakikaM\PriceToHTML;
+namespace makikam\PriceToHTML;
 
 
 interface iMessagePage

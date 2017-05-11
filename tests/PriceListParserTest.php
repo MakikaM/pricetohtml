@@ -1,6 +1,6 @@
 <?php
 
-use MakikaM\PriceToHTML\PriceListParser;
+use makikam\PriceToHTML\PriceListParser;
 use PHPUnit\Framework\TestCase;
 
 class PriceListParserTest extends TestCase
