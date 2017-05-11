@@ -56,9 +56,9 @@ class PricesArrayToHTMLFile
     private function _appendPriceLines()
     {
         //$arTplVars = [];
-        $tplCount = $this->_getParamsInTemplate($this->_tpl, $arTplVars);
+        $tplVarsCount = $this->_getParamsInTemplate($this->_tpl, $arTplVars);
 
-        if ($tplCount === 0) {
+        if ($tplVarsCount === 0) {
             throw new \InvalidArgumentException('в шаблоне прайса не указано ни одной подстановки');
         }
 
@@ -66,10 +66,10 @@ class PricesArrayToHTMLFile
         $arTplVarsOrder = $this->_getTemplateVarsOrder($arTplVars);
 
         foreach ($this->_arPrice as $arPricePos) {
-            $this->_checkPricePositionConsistency($arPricePos, $tplCount);
+            $this->_checkPricePositionConsistency($arPricePos, $tplVarsCount);
+            $arReorderedTplVarsPos = $this->_getReorderedTplVarsPositions($arTplVarsOrder, $arPricePos);
 
-            $arReorderedPricePos = $this->_getReorderPricePositions($arTplVarsOrder, $arPricePos);
-            fwrite($fhandle, str_replace($arTplVars, $arReorderedPricePos, $this->_tpl));
+            fwrite($fhandle, str_replace($arTplVars, $arReorderedTplVarsPos, $this->_tpl));
         }
 
         fclose($fhandle);
@@ -86,7 +86,8 @@ class PricesArrayToHTMLFile
         return $res;
     }
 
-    private function _getReorderPricePositions(array $arTplVarsOrder, array $arPricePos): array
+
+    private function _getReorderedTplVarsPositions(array $arTplVarsOrder, array $arPricePos): array
     {
         $res = [];
 
@@ -129,10 +130,6 @@ class PricesArrayToHTMLFile
     }
 
 
-    /**
-     * @param string $headFile
-     * @param string $footFile
-     */
     private function _checkHeaderFooterFiles(string $headFile, string $footFile)
     {
         if (!(is_readable($headFile) && is_readable($footFile))) {
@@ -141,9 +138,6 @@ class PricesArrayToHTMLFile
     }
 
 
-    /**
-     * @param string $dstFile
-     */
     private function _checkDstFileWritePermissions(string $dstFile)
     {
         if (file_exists($dstFile)) {
@@ -176,19 +170,12 @@ class PricesArrayToHTMLFile
 
     private function _getParamsInTemplate(string $tpl, &$arTplVars): int
     {
-
         $res = preg_match_all('/(%\d+)/', $tpl, $arTplVars);
         $arTplVars = $arTplVars[0];
         return $res;
     }
 
-    /**
-     * @param string $headFile
-     * @param string $footFile
-     * @param string $dstFile
-     * @param array $arPrice
-     * @param string $template_line
-     */
+
     private function _storeParams(string $headFile, string $footFile, string $dstFile, array $arPrice, string $template_line)
     {
         $this->_headFile = $headFile;
