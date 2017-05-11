@@ -112,7 +112,7 @@ class PricesArrayToHTMLFileTest extends TestCase
             $this->_HTMLDir . 'price-test-footer.html',
             $this->_HTMLDir . 'test-html-output.html',
             $this->_arPricesExample,
-            "<tr><td>%1 - %2</td><td>%3</td></tr>\n");
+            "<tr><td>%1 - %0</td><td>%2</td></tr>\n");
 
         $this->assertFileExists($this->_HTMLDir.'test-html-output.html');
 
