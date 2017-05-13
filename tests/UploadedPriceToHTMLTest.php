@@ -12,5 +12,26 @@ use PHPUnit\Framework\TestCase;
 
 class UploadedPriceToHTMLTest extends TestCase
 {
+    /**
+     * @var UploadedPriceToHTML
+     */
+    protected $upth;
+
+
+    public function setUp()
+    {
+        $this->upth = new UploadedPriceToHTML();
+    }
+
     
+    public function tearDown()
+    {
+        $this->upth = null;
+    }
+
+
+    public function testEmptyErrorPage()
+    {
+        $this->upth->SetErrorPage(null);
+    }
 }

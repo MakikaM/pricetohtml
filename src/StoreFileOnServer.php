@@ -13,6 +13,7 @@ class StoreFileOnServer
 
     public function __construct(string $destFPath, $destFName, $oldFilesPath, int $oldFilesNum = 3)
     {
+        //TODO oldFilesPath and oldFilesNum must be optionial
         $this->checkConstructionParams($destFPath, $destFName, $oldFilesPath);
         $this->dstPath = $destFPath;
         $this->dstName = $destFName;
