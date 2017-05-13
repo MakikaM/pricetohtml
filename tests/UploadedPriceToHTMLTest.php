@@ -29,4 +29,20 @@ class UploadedPriceToHTMLTest extends TestCase
         $this->upth = null;
     }
 
+
+    public function testReturnsFalseOnIncorrectPriceListCheck()
+    {
+        $this->assertFalse($this->upth->Do());
+    }
+
+    public function test()
+    {
+        $this->qwe(null);
+        $this->assertFalse(false);
+    }
+
+    public function qwe(int $a = 3)
+    {
+        var_dump($a);
+    }
 }

@@ -14,67 +14,70 @@ class UploadedPriceToHTML
     /**
      * @var IMessagePage
      */
-    private $_errorPage = null;
+    protected $_errorPage = null;
     /**
      * @var IMessagePage
      */
-    private $_okPage = null;
+    protected $_okPage = null;
+
     //----CheckPriceListFile----
     /**
      * @var string
      */
-    private $_exts = null;
+    protected $_exts = null;
     //----StoreFileOnServer-----
     /**
      * @var string
      */
-    private $_destPriceListPath = null;
+    protected $_destPriceListPath = null;
     /**
      * @var string
      */
-    private $_destPriceListFName = null;
+    protected $_destPriceListFName = null;
     /**
      * @var string
      */
-    private $_oldFilesPath = null;
+    protected $_oldFilesPath = null;
     /**
      * @var int
      */
-    private $_oldFilesNum = null;
+    protected $_oldFilesNum = null;
+
     //----PriceListParser----
     /**
      * @var array
      */
-    private $_arColsToParse = null;
+    protected $_arColsToParse = null;
     /**
      * @var int
      */
-    private $_headRowsPass = null;
+    protected $_headRowsPass = null;
     /**
      * @var array
      */
-    private $_arNotEmptyCols = null;
+    protected $_arNotEmptyCols = null;
+
     //----PricesArrayToHTMLFile----
     /**
      * @var string
      */
-    private $_headHTMLFile = null;
+    protected $_headHTMLFile = null;
     /**
      * @var string
      */
-    private $_footHTMLFile = null;
+    protected $_footHTMLFile = null;
     /**
      * @var string
      */
-    private $_dstHTMLFile = null;
+    protected $_dstHTMLFile = null;
     /**
      * @var array
      */
-    private $_arPrice = null;
+    protected $_arPrice = null;
     /**
      * @var string
      */
-    private $_templateString = null;
+    protected $_templateString = null;
 
     /**
      * Allowed spreadsheet file extensions.
@@ -256,13 +259,82 @@ class UploadedPriceToHTML
 
 
     /**
-     * Let's go
+     * Starts parsing.
+     *
      * @return bool
      */
     public function Do(): bool
     {
+        if (!$this->_checkPriceListFile()) {
+            return false;
+        }
 
+
+
+        return true;
     }
 
+
+
+    protected function _storeFileOnServer(): bool
+    {
+        $res = true;
+
+        try {
+            if ($this->_exts !== null) {
+                $checkPriceListFile = new CheckPriceListFile($this->_exts);
+            } else {
+                $checkPriceListFile = new CheckPriceListFile();
+            }
+        } catch (\Exception $e) {
+            $res = false;
+            $this->_callErrorPage($e->getMessage());
+        } finally {
+            $checkPriceListFile = null;
+        }
+
+        return $res;
+    }
+
+
+    protected function _checkPriceListFile(): bool
+    {
+        $res = true;
+
+        try {
+            if ($this->_exts !== null) {
+                $checkPriceListFile = new CheckPriceListFile($this->_exts);
+            } else {
+                $checkPriceListFile = new CheckPriceListFile();
+            }
+        } catch (\Exception $e) {
+            $res = false;
+            $this->_callErrorPage($e->getMessage());
+        } finally {
+            $checkPriceListFile = null;
+        }
+
+        return $res;
+    }
+
+
+    protected function _callokPage($str)
+    {
+        $this->_callPage($this->_okPage, $str);
+    }
+
+
+    protected function _callErrorPage($str)
+    {
+        $this->_callPage($this->_errorPage, $str);
+    }
+
+
+    protected function _callPage($page, string $msg)
+    {
+        if ($page instanceof iMessagePage) {
+            echo $page->GetMessagePage($msg);
+        }
+    }
 
 }
