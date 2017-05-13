@@ -6,7 +6,7 @@
  * Time: 18:28
  */
 
-namespace MakikaM\PriceToHTML;
+namespace makikam\PriceToHTML;
 
 use PHPUnit\Framework\TestCase;
 
@@ -29,9 +29,4 @@ class UploadedPriceToHTMLTest extends TestCase
         $this->upth = null;
     }
 
-
-    public function testEmptyErrorPage()
-    {
-        $this->upth->SetErrorPage(null);
-    }
 }

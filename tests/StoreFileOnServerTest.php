@@ -1,6 +1,6 @@
 <?php
 
-namespace MakikaM\PriceToHTML;
+namespace makikam\PriceToHTML;
 
 use PHPUnit\Framework\TestCase;
 

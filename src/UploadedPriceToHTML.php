@@ -6,7 +6,7 @@
  * Time: 17:45
  */
 
-namespace MakikaM\PriceToHTML;
+namespace makikam\PriceToHTML;
 
 
 class UploadedPriceToHTML
