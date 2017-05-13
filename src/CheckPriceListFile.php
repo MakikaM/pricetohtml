@@ -3,6 +3,12 @@
 namespace makikam\PriceToHTML;
 
 
+/**
+ * Class CheckPriceListFile
+ *
+ * @throws
+ * @package makikam\PriceToHTML
+ */
 class CheckPriceListFile
 {
     CONST E_FILE_UPLOAD = 2;
@@ -21,6 +27,10 @@ class CheckPriceListFile
     }
 
 
+    /**
+     * @throws \InvalidArgumentException
+     * @param array $exts
+     */
     private function _checkConstructorParam(array $exts)
     {
         if (count($exts) === 0) {
@@ -34,6 +44,9 @@ class CheckPriceListFile
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     private function _checkFILESOnErrors()
     {
         if (count(array_keys($_FILES)) > $this->maxUplFiles) {
@@ -54,16 +67,27 @@ class CheckPriceListFile
     }
 
 
+    /**
+     * @param string $fname
+     * @return bool
+     * @throws \Exception
+     */
     private function _isParseable(string $fname): bool
     {
+        $res = true;
+
         try {
             $Reader = new \SpreadsheetReader(sys_get_temp_dir() . "\\" . $fname);
         } catch (\Exception $e) {
-            throw new \Exception($e->getMessage(), CheckPriceListFile::E_CANT_OPEN);
+            //throw new \Exception($e->getMessage(), CheckPriceListFile::E_CANT_OPEN);
+            $res = false;
         } finally {
             unset($Reader);
         }
+
+        return $res;
     }
+
 
     private function _isAcceptableFileExtension(string $fname): bool
     {
