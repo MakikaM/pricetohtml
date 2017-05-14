@@ -20,6 +20,7 @@ class CheckPriceListFile
 
     public function __construct(array $arExts = ['xls', 'xlsx'])
     {
+        //TODO When SpreadSheet will be done through Interface, make default ext .*
         $this->_checkConstructorParam($arExts);
         $this->arExts = $arExts;
 
@@ -77,7 +78,7 @@ class CheckPriceListFile
         $res = true;
 
         try {
-            $Reader = new \SpreadsheetReader(sys_get_temp_dir() . "\\" . $fname);
+            $Reader = new \SpreadsheetReader(sys_get_temp_dir() . '/' . $fname);
         } catch (\Exception $e) {
             //throw new \Exception($e->getMessage(), CheckPriceListFile::E_CANT_OPEN);
             $res = false;
