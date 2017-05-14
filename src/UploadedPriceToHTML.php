@@ -24,7 +24,7 @@ class UploadedPriceToHTML
     /**
      * @var string
      */
-    protected $_exts = null;
+    protected $_exts = ['xls', 'xlsx'];
     //----StoreFileOnServer-----
     /**
      * @var string
@@ -41,7 +41,7 @@ class UploadedPriceToHTML
     /**
      * @var int
      */
-    protected $_oldFilesNum = null;
+    protected $_oldFilesNum = 3;
 
     //----PriceListParser----
     /**
@@ -51,7 +51,7 @@ class UploadedPriceToHTML
     /**
      * @var int
      */
-    protected $_headRowsPass = null;
+    protected $_headRowsPass = 0;
     /**
      * @var array
      */
@@ -79,15 +79,22 @@ class UploadedPriceToHTML
      */
     protected $_templateString = null;
 
+    //----UploadedPriceToHTML----
+    /**
+     * @var string
+     */
+    protected $_OkMessage = '';
+
+
     /**
      * Allowed spreadsheet file extensions.
      *
-     * @param array $exts
+     * @param array $arExts
      * @return UploadedPriceToHTML
      */
-    public function setAllowedExts(array $exts): UploadedPriceToHTML
+    public function setAllowedExts(array $arExts = ['xls', 'xlsx']): UploadedPriceToHTML
     {
-        $this->_exts = $exts;
+        $this->_exts = $arExts;
         return $this;
     }
 
@@ -137,7 +144,7 @@ class UploadedPriceToHTML
      * @param int $oldFilesNum
      * @return UploadedPriceToHTML
      */
-    public function setOldPricesNum(int $oldFilesNum): UploadedPriceToHTML
+    public function setOldPricesNum(int $oldFilesNum = 3): UploadedPriceToHTML
     {
         $this->_oldFilesNum = $oldFilesNum;
         return $this;
@@ -163,7 +170,7 @@ class UploadedPriceToHTML
      * @param int $headRowsPass
      * @return UploadedPriceToHTML
      */
-    public function setHeadRowsPass(int $headRowsPass): UploadedPriceToHTML
+    public function setHeadRowsPass(int $headRowsPass = 0): UploadedPriceToHTML
     {
         $this->_headRowsPass = $headRowsPass;
         return $this;
@@ -238,7 +245,7 @@ class UploadedPriceToHTML
      * @param iMessagePage
      * @return UploadedPriceToHTML
      */
-    public function SetErrorPage(iMessagePage $messagePage): UploadedPriceToHTML
+    public function setErrorPage(iMessagePage $messagePage): UploadedPriceToHTML
     {
         $this->_errorPage = $messagePage;
         return $this;
@@ -251,7 +258,7 @@ class UploadedPriceToHTML
      * @param iMessagePage
      * @return UploadedPriceToHTML
      */
-    public function SetOkPage(iMessagePage $messagePage): UploadedPriceToHTML
+    public function setOkPage(iMessagePage $messagePage): UploadedPriceToHTML
     {
         $this->_okPage = $messagePage;
         return $this;
@@ -265,72 +272,94 @@ class UploadedPriceToHTML
      */
     public function Do(): bool
     {
-        if (!$this->_checkPriceListFile()) {
-            return false;
+        if ($this->_checkPriceListFile() &&
+            $this->_storeFileOnServer() &&
+            $this->_priceListParser() &&
+            $this->_pricesArrayToHTMLFile()
+        ) {
+            if ($this->_OkMessage !== '') {
+                $this->_showOkPage($this->_OkMessage);
+            }
+            return true;
         }
 
-
-
-        return true;
+        return false;
     }
 
 
+    protected function _pricesArrayToHTMLFile(): bool
+    {
+        return $this->_createVoidClass(
+            'PricesArrayToHTML',
+            $this->_headHTMLFile,
+            $this->_footHTMLFile,
+            $this->_dstHTMLFile,
+            $this->_arPrice,
+            $this->_templateString = "<tr><td>%0 - %1</td><td>%2</td></tr>\n"
+            );
+    }
 
-    protected function _storeFileOnServer(): bool
+
+    protected function _priceListParser(): bool
     {
         $res = true;
 
         try {
-            if ($this->_exts !== null) {
-                $checkPriceListFile = new CheckPriceListFile($this->_exts);
-            } else {
-                $checkPriceListFile = new CheckPriceListFile();
-            }
+            $pricelistFile = $this->_destPriceListPath . $this->_destPriceListFName;
+            $priceListParser = new PriceListParser($pricelistFile, $this->_arColsToParse, $this->_headRowsPass, $this->_arNotEmptyCols);
+            $this->_arPrice = $priceListParser->GetParsedArray();
+            $this->_OkMessage .= "\n Rows parsed :" . $priceListParser->GetParsedRowsCount();
+            $this->_OkMessage .= "\n Rows passed :" . $priceListParser->GetPassedRowsCount();
+            $this->_OkMessage .= "\n Total :" . ($priceListParser->GetParsedRowsCount() + $priceListParser->GetPassedRowsCount()) . "\n";
         } catch (\Exception $e) {
             $res = false;
-            $this->_callErrorPage($e->getMessage());
-        } finally {
-            $checkPriceListFile = null;
+            $this->_showErrorPage($e->getMessage());
         }
 
         return $res;
+    }
+
+
+    protected function _storeFileOnServer(): bool
+    {
+        return $this->_createVoidClass('StoreFileOnServer', $this->_destPriceListPath, $this->_destPriceListFName, $this->_oldFilesPath, $this->_oldFilesNum);
     }
 
 
     protected function _checkPriceListFile(): bool
     {
+        return $this->_createVoidClass('CheckPriceListFile', $this->_exts);
+    }
+
+
+    protected function _createVoidClass(string $className, ...$params)
+    {
         $res = true;
 
         try {
-            if ($this->_exts !== null) {
-                $checkPriceListFile = new CheckPriceListFile($this->_exts);
-            } else {
-                $checkPriceListFile = new CheckPriceListFile();
-            }
+            new $className(...$params);
         } catch (\Exception $e) {
             $res = false;
-            $this->_callErrorPage($e->getMessage());
-        } finally {
-            $checkPriceListFile = null;
+            $this->_showErrorPage($e->getMessage());
         }
 
         return $res;
     }
 
 
-    protected function _callokPage($str)
+    protected function _showOkPage($str)
     {
-        $this->_callPage($this->_okPage, $str);
+        $this->_showPage($this->_okPage, $str);
     }
 
 
-    protected function _callErrorPage($str)
+    protected function _showErrorPage($str)
     {
-        $this->_callPage($this->_errorPage, $str);
+        $this->_showPage($this->_errorPage, $str);
     }
 
 
-    protected function _callPage($page, string $msg)
+    protected function _showPage($page, string $msg)
     {
         if ($page instanceof iMessagePage) {
             echo $page->GetMessagePage($msg);

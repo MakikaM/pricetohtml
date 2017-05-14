@@ -3,3 +3,5 @@
 out
 gen
 /vendor
+composer.lock
+composer.phar

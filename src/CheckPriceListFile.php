@@ -20,6 +20,7 @@ class CheckPriceListFile
 
     public function __construct(array $arExts = ['xls', 'xlsx'])
     {
+        //TODO When SpreadSheet will be done through Interface, make default ext .*
         $this->_checkConstructorParam($arExts);
         $this->arExts = $arExts;
 
