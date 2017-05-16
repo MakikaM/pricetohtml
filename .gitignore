@@ -6,6 +6,5 @@ gen
 composer.lock
 composer.phar
 tests/html/test-html-output.html
-html/price-orig-file.html
 excel/Price.xls
 old_files_test/*
