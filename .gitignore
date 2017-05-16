@@ -4,5 +4,3 @@ composer.phar
 tests/old_files_test/*
 tests/html/test-html-output.html
 !/.gitignore
-
-
