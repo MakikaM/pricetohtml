@@ -292,7 +292,7 @@ class UploadedPriceToHTML
     protected function _pricesArrayToHTMLFile(): bool
     {
         return $this->_createVoidClass(
-            'PricesArrayToHTML',
+            'PricesArrayToHTMLFile',
             $this->_headHTMLFile,
             $this->_footHTMLFile,
             $this->_dstHTMLFile,
