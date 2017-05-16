@@ -78,7 +78,7 @@ class CheckPriceListFile
         $res = true;
 
         try {
-            $Reader = new \SpreadsheetReader(sys_get_temp_dir() . "\\" . $fname);
+            $Reader = new \SpreadsheetReader(sys_get_temp_dir() . '/' . $fname);
         } catch (\Exception $e) {
             //throw new \Exception($e->getMessage(), CheckPriceListFile::E_CANT_OPEN);
             $res = false;
