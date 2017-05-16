@@ -119,6 +119,9 @@ class StoreFileOnServer
             $error = true;
         }
 
+        if ($error) {
+            throw new \InvalidArgumentException($err_msg);
+        }
 
         if (!is_writable($destFPath)) {
             $err_msg .= 'Destination path is not writeable. ';
