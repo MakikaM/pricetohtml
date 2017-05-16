@@ -84,14 +84,56 @@ class StoreFileOnServer
 
     private function checkConstructionParams(string $destFPath, $destFName, $oldFilesPath)
     {
-        if (($destFPath === '') || ($destFName === '') || ($oldFilesPath === '')) {
-            throw new \InvalidArgumentException('Empty path in constructor');
+        $err_msg = 'Empty path in constructor: ';
+        $error = false;
+
+        if ($destFPath === '') {
+            $err_msg .= 'Destination path. ';
+            $error = true;
         }
 
-        if ((!is_dir($destFPath)) || (!is_dir($oldFilesPath)) || (!is_writable($destFPath)) || (!is_writable($oldFilesPath))) {
-            throw new \InvalidArgumentException('Wrong path in constructor');
+        if ($destFName === '') {
+            $err_msg .= 'Destination filename. ';
+            $error = true;
         }
+
+        if ($oldFilesPath === '') {
+            $err_msg = 'Old files path. ';
+            $error = true;
+        }
+
+        if ($error) {
+            throw new \InvalidArgumentException($err_msg);
+        }
+
+
+        $err_msg = 'Wrong path in constructor: ';
+
+        if (!is_dir($destFPath)) {
+            $err_msg .= 'Destination path is not directory. ';
+            $error = true;
+        }
+
+        if (!is_dir($oldFilesPath)) {
+            $err_msg .= 'Old files path is not directory. ';
+            $error = true;
+        }
+
+
+        if (!is_writable($destFPath)) {
+            $err_msg .= 'Destination path is not writeable. ';
+            $error = true;
+        }
+
+        if(!is_writable($oldFilesPath)){
+            $err_msg .= 'Old files path is not writeable. ';
+            $error = true;
+        }
+
+    if ($error) {
+        throw new \InvalidArgumentException($err_msg);
     }
+}
 
 }
 
