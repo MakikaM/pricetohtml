@@ -83,7 +83,7 @@ class UploadedPriceToHTML
     /**
      * @var string
      */
-    protected $_OkMessage = '';
+    protected $_exitMessage = '';
 
 
     /**
@@ -183,7 +183,7 @@ class UploadedPriceToHTML
      * @param array $arNotEmptyCols
      * @return UploadedPriceToHTML
      */
-    public function setArNotEmptyCols(array $arNotEmptyCols): UploadedPriceToHTML
+    public function setNotEmptyCols(array $arNotEmptyCols): UploadedPriceToHTML
     {
         $this->_arNotEmptyCols = $arNotEmptyCols;
         return $this;
@@ -272,13 +272,15 @@ class UploadedPriceToHTML
      */
     public function Do(): bool
     {
+        $this->_exitMessage = '';
+
         if ($this->_checkPriceListFile() &&
             $this->_storeFileOnServer() &&
             $this->_priceListParser() &&
             $this->_pricesArrayToHTMLFile()
         ) {
-            if ($this->_OkMessage !== '') {
-                $this->_showOkPage($this->_OkMessage);
+            if ($this->_exitMessage !== '') {
+                $this->_showOkPage($this->_exitMessage);
             }
             return true;
         }
@@ -296,7 +298,7 @@ class UploadedPriceToHTML
             $this->_dstHTMLFile,
             $this->_arPrice,
             $this->_templateString = "<tr><td>%0 - %1</td><td>%2</td></tr>\n"
-            );
+        );
     }
 
 
@@ -308,12 +310,12 @@ class UploadedPriceToHTML
             $pricelistFile = $this->_destPriceListPath . $this->_destPriceListFName;
             $priceListParser = new PriceListParser($pricelistFile, $this->_arColsToParse, $this->_headRowsPass, $this->_arNotEmptyCols);
             $this->_arPrice = $priceListParser->GetParsedArray();
-            $this->_OkMessage .= "\n Rows parsed :" . $priceListParser->GetParsedRowsCount();
-            $this->_OkMessage .= "\n Rows passed :" . $priceListParser->GetPassedRowsCount();
-            $this->_OkMessage .= "\n Total :" . ($priceListParser->GetParsedRowsCount() + $priceListParser->GetPassedRowsCount()) . "\n";
+            $this->_exitMessage .= "\n Rows parsed :" . $priceListParser->GetParsedRowsCount();
+            $this->_exitMessage .= "\n Rows passed :" . $priceListParser->GetPassedRowsCount();
+            $this->_exitMessage .= "\n Total :" . ($priceListParser->GetParsedRowsCount() + $priceListParser->GetPassedRowsCount()) . "\n";
         } catch (\Exception $e) {
             $res = false;
-            $this->_showErrorPage($e->getMessage());
+            $this->_processErrorText($e->getMessage());
         }
 
         return $res;
@@ -337,13 +339,20 @@ class UploadedPriceToHTML
         $res = true;
 
         try {
-            new $className(...$params);
+            $reflectionClass = new \ReflectionClass(__NAMESPACE__ . '\\' . $className);
+            $voidClass = $reflectionClass->newInstance(...$params);
         } catch (\Exception $e) {
             $res = false;
-            $this->_showErrorPage($e->getMessage());
+            $this->_processErrorText($className . ": " . $e->getMessage());
         }
 
         return $res;
+    }
+
+
+    public function getMessages(): string
+    {
+        return $this->_exitMessage;
     }
 
 
@@ -353,8 +362,9 @@ class UploadedPriceToHTML
     }
 
 
-    protected function _showErrorPage($str)
+    protected function _processErrorText($str)
     {
+        $this->_exitMessage = $str;
         $this->_showPage($this->_errorPage, $str);
     }
 

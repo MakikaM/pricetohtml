@@ -67,6 +67,38 @@ class CheckPriceListFileTest extends TestCase
         $tmp = new CheckPriceListFile();
     }
 
+    public function testPriceCheckPassSuccess()
+    {
+        $test_filename = 'test_correct_price.xls';
+
+        $_FILES = [
+            'file' => [
+                'name' => $test_filename,
+                'type' => 'asd',
+                'tmp_name' => $test_filename,
+                'error' => UPLOAD_ERR_OK,
+                'size' => 10
+            ]
+        ];
+
+        $tmp_file = sys_get_temp_dir() . '/' . $test_filename;
+
+        if (!copy(__DIR__ . '/excel/' . $test_filename, $tmp_file)) {
+            throw new \Exception('cant create test xls file!');
+        }
+
+        try {
+            $tmp = new CheckPriceListFile();
+            $this->assertInstanceOf(__NAMESPACE__.'\\'.CheckPriceListFile, $tmp);
+        } finally {
+            if (file_exists($tmp_file)) {
+                unlink($tmp_file);
+            }
+            unset($tmp);
+        }
+
+    }
+
     public function tearDown()
     {
         if (isset($_FILES)) {

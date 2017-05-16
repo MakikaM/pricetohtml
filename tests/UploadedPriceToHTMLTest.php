@@ -23,7 +23,7 @@ class UploadedPriceToHTMLTest extends TestCase
         $this->upth = new UploadedPriceToHTML();
     }
 
-    
+
     public function tearDown()
     {
         $this->upth = null;
@@ -35,14 +35,50 @@ class UploadedPriceToHTMLTest extends TestCase
         $this->assertFalse($this->upth->Do());
     }
 
-    public function test()
+    public function testClassWorks()
     {
-        $this->qwe(null);
-        $this->assertFalse(false);
-    }
+        $test_filename = 'test_correct_price.xls';
 
-    public function qwe(int $a = 3)
-    {
-        var_dump($a);
+        $_FILES = [
+            'file' => [
+                'name' => $test_filename,
+                'type' => 'asd',
+                'tmp_name' => $test_filename,
+                'error' => UPLOAD_ERR_OK,
+                'size' => 10
+            ]
+        ];
+
+        $tmp_file = sys_get_temp_dir() . '/' . $test_filename;
+
+        if (!copy(__DIR__ . '/excel/' . $test_filename, $tmp_file)) {
+            throw new \Exception('cant create test xls file!');
+        }
+
+        try {
+            $uph = new UploadedPriceToHTML();
+
+            $res = $uph->setDestinationPath('excel/')
+                       ->setDestFileName('test_file.xls')
+                       ->setOldPricesPath('old_files_test/')
+                       ->setOldPricesNum(3)
+                       ->setColumnsToParse([5, 0, 7])
+                       ->setHeadRowsPass(1)
+                       ->setNotEmptyCols([7])
+                       ->setHeadHTMLFile('html/price-test-header.html')
+                       ->setFootHTMLFile('html/price-test-footer.html')
+                       ->setDstHTMLFile('html/test-html-output.html')
+                       ->Do();
+
+            $this->assertEquals('', $uph->getMessages());
+
+            $this->assertTrue($res);
+
+        } finally {
+            if (file_exists($tmp_file)) {
+                unlink($tmp_file);
+            }
+            unset($tmp);
+        }
     }
 }
