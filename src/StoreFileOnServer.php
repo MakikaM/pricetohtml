@@ -7,22 +7,26 @@ class StoreFileOnServer
 {
     protected $dstPath;//destination filepath
     protected $dstName;//destination filename
-    protected $oldFilesPath;//где хранятся старые прайсы
-    protected $oldFilesNum;//сколько старых прайсов хранить
+    protected $oldFilesPath;//Folder where old pricelists stored on server
+    protected $oldFilesNum;//How much old pricelists to keep
 
 
-    public function __construct(string $destFPath, $destFName, $oldFilesPath, int $oldFilesNum = 3)
+    public function __construct(string $destFPath, $destFName, $oldFilesPath, int $oldFilesNum = 0)
     {
         //TODO oldFilesPath and oldFilesNum must be optionial
-        $this->checkConstructionParams($destFPath, $destFName, $oldFilesPath);
+        $this->checkConstructionParams($destFPath, $destFName, $oldFilesPath, $oldFilesNum);
         $this->dstPath = $destFPath;
         $this->dstName = $destFName;
         $this->oldFilesPath = $oldFilesPath;
         $this->oldFilesNum = $oldFilesNum;
 
-        $this->_moveOldPricelist();
+        if ($oldFilesNum > 0) {
+            $this->_moveOldPricelist();
+            $this->_deleteOldPricelists();
+        }
+
         $this->_moveTempFileToPricelist();
-        $this->_deleteOldPricelists();
+
     }
 
     private function _deleteOldPricelists()
@@ -82,7 +86,7 @@ class StoreFileOnServer
     }
 
 
-    private function checkConstructionParams(string $destFPath, $destFName, $oldFilesPath)
+    private function checkConstructionParams(string $destFPath, $destFName, $oldFilesPath, int $oldFilesNum)
     {
         $err_msg = 'Empty path in constructor: ';
         $error = false;
@@ -97,7 +101,7 @@ class StoreFileOnServer
             $error = true;
         }
 
-        if ($oldFilesPath === '') {
+        if ((($oldFilesNum > 0)) && ($oldFilesPath === '')) {
             $err_msg = 'Old files path. ';
             $error = true;
         }
@@ -114,7 +118,7 @@ class StoreFileOnServer
             $error = true;
         }
 
-        if (!is_dir($oldFilesPath)) {
+        if (($oldFilesNum > 0) && (!is_dir($oldFilesPath))) {
             $err_msg .= 'Old files path is not directory. ';
             $error = true;
         }
@@ -128,15 +132,15 @@ class StoreFileOnServer
             $error = true;
         }
 
-        if(!is_writable($oldFilesPath)){
+        if (($oldFilesNum > 0) && (!is_writable($oldFilesPath))) {
             $err_msg .= 'Old files path is not writeable. ';
             $error = true;
         }
 
-    if ($error) {
-        throw new \InvalidArgumentException($err_msg);
+        if ($error) {
+            throw new \InvalidArgumentException($err_msg);
+        }
     }
-}
 
 }
 
