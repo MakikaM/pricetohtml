@@ -59,7 +59,7 @@ class PricesArrayToHTMLFile
         $tplVarsCount = $this->_getParamsInTemplate($this->_tpl, $arTplVars);
 
         if ($tplVarsCount === 0) {
-            throw new \InvalidArgumentException('в шаблоне прайса не указано ни одной подстановки');
+            throw new \InvalidArgumentException('no variables found in template');
         }
 
         $fhandle = fopen($this->_dstFile, 'ab');
@@ -102,7 +102,7 @@ class PricesArrayToHTMLFile
     private function _checkPricePositionConsistency(array $arPricePos, int $tpl_count)
     {
         if (count($arPricePos) !== $tpl_count) {
-            throw new \InvalidArgumentException('в массиве прайс-листа задана позиция с неверным количеством парметров: ' . print_r($arPricePos, true));
+            throw new \InvalidArgumentException('wrong number of elements in price positions array. It\'s not equal to number of variables in template string: ');
         }
 
         foreach ($arPricePos as $itm) {
@@ -117,7 +117,7 @@ class PricesArrayToHTMLFile
     private function _addWarning(array $arInconsistentPricePos)
     {
         $this->_warningsCount++;
-        $this->_arWarningsMessages[] = 'По крайней мере одна колонка позиции пустая: ' . implode(', ', $arInconsistentPricePos);
+        $this->_arWarningsMessages[] = 'At least one column in position is empty: ' . implode(', ', $arInconsistentPricePos);
     }
 
 
@@ -133,7 +133,7 @@ class PricesArrayToHTMLFile
     private function _checkHeaderFooterFiles(string $headFile, string $footFile)
     {
         if (!(is_readable($headFile) && is_readable($footFile))) {
-            throw new \InvalidArgumentException('не могу прочитать header или footer html файл прайс-листа');
+            throw new \InvalidArgumentException('can\'t read header or footer html file');
         }
     }
 
@@ -146,8 +146,9 @@ class PricesArrayToHTMLFile
             $dst = pathinfo($dstFile, PATHINFO_DIRNAME);
         }
 
+
         if (!is_writable($dst)) {
-            throw new \InvalidArgumentException('не могу записать новый файл прайслиста');
+            throw new \InvalidArgumentException('can\'t write new file: '.$dstFile);
         }
     }
 
@@ -155,7 +156,7 @@ class PricesArrayToHTMLFile
     private function _checkPricesArray(array $arPrice)
     {
         if (count($arPrice) < 1) {
-            throw new \InvalidArgumentException('пустой массив прайсов');
+            throw new \InvalidArgumentException('empty pricelist array');
         }
     }
 
@@ -163,7 +164,7 @@ class PricesArrayToHTMLFile
     private function _checkNotEmptyLine(string $tpl)
     {
         if ($tpl === '') {
-            throw new \InvalidArgumentException('пустая строка шаблона HTML прайса');
+            throw new \InvalidArgumentException('empty template string');
         }
     }
 
