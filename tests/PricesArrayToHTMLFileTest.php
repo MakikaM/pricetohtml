@@ -44,19 +44,6 @@ class PricesArrayToHTMLFileTest extends TestCase
     }
 
 
-    //TODO php cli в docker'e запускается под root. Как задавать пользователя?
-    /*public function testWrongDest()
-    {
-        $this->expectException(\InvalidArgumentException::class);
-
-        $pth = new PricesArrayToHTMLFile(
-            $this->_HTMLDir . 'price-test-header.html',
-            $this->_HTMLDir . 'price-test-footer.html',
-            '/' . 'test-html-output.html',
-            $this->_arPricesExample);
-    }*/
-
-
     public function testEmptyPriceListArray()
     {
         $this->expectException(\InvalidArgumentException::class);

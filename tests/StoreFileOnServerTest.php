@@ -38,7 +38,6 @@ class StoreFileOnServerTest extends TestCase
 
     public function testOldFilesRemovingAndPlacingNewPriceOnPlace()
     {
-        //TODO Refactoring: Вынести перенос файлов в отдельный класс, что бы можно было юнит тестить
         $oft_dir = __DIR__ . '/' . 'old_files_test/';
         $keep_n_old_prices = 2;
 
