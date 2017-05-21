@@ -15,7 +15,7 @@ How it works:
  
  
  ### Usage:
-   soon
+   Create instance of UploadedPriceToHTML class, set it's properties and call method 'Do'. For example look at tests/UploadedPriceToHTMLTest.php
 
  ### Licensing
  All of the code in this library is licensed under the MIT license as included in the LICENSE file, however, for now spreadsheet-reader library
